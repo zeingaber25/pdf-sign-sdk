@@ -36,15 +36,23 @@ const server = http.createServer((req, res) => {
   }
   
   // Security: prevent directory traversal
-  filePath = path.normalize(filePath).replace(/^(\.\.[\/\\])+/, '');
-  filePath = path.join(__dirname, filePath);
+  // Normalize the path and ensure it stays within the application directory
+  const requestedPath = path.normalize(filePath.replace(/^\//, ''));
+  const fullPath = path.resolve(__dirname, requestedPath);
+  
+  // Verify the resolved path is within the application directory
+  if (!fullPath.startsWith(__dirname)) {
+    res.writeHead(403, { 'Content-Type': 'text/plain' });
+    res.end('403 - Forbidden');
+    return;
+  }
   
   // Get file extension for MIME type
-  const ext = path.extname(filePath).toLowerCase();
+  const ext = path.extname(fullPath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
   
   // Read and serve the file
-  fs.readFile(filePath, (err, content) => {
+  fs.readFile(fullPath, (err, content) => {
     if (err) {
       if (err.code === 'ENOENT') {
         res.writeHead(404, { 'Content-Type': 'text/plain' });
