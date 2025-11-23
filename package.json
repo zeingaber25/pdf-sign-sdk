@@ -1,0 +1,32 @@
+{
+  "name": "pdf-sign-sdk",
+  "version": "1.0.0",
+  "description": "A powerful, zero-dependency PDF signature annotation SDK built as a Web Component",
+  "main": "pdf-sign-sdk.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "serve": "node server.js"
+  },
+  "keywords": [
+    "pdf",
+    "signature",
+    "web-component",
+    "pdf-annotation",
+    "digital-signature"
+  ],
+  "author": "",
+  "license": "MIT",
+  "files": [
+    "pdf-sign-sdk.js",
+    "example.html",
+    "dummy.pdf",
+    "server.js",
+    "healthcheck.sh",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zeingaber25/pdf-sign-sdk.git"
+  }
+}

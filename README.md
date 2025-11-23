@@ -42,7 +42,28 @@ A powerful, zero-dependency PDF signature annotation SDK built as a Web Componen
 - `pdf-sign-sdk.js` – Main SDK (Web Component + utilities)
 - `example.html` – Plain HTML + JS demo
 - `README.md` – Documentation
-- `serve.ps1` – Local development server (PowerShell)
+- `server.js` – Node.js HTTP server (cross-platform)
+- `serve.sh` – Linux/Unix development server script
+- `package.json` – NPM package configuration
+
+## Installation
+
+### **Option 1: Clone from GitHub**
+
+```bash
+git clone https://github.com/zeingaber25/pdf-sign-sdk.git
+cd pdf-sign-sdk
+```
+
+### **Option 2: Install via NPM** (if published)
+
+```bash
+npm install pdf-sign-sdk
+```
+
+### **Option 3: Download directly**
+
+Download the files and include `pdf-sign-sdk.js` in your HTML.
 
 ## Quick Start
 
@@ -79,16 +100,37 @@ A powerful, zero-dependency PDF signature annotation SDK built as a Web Componen
 </html>
 ```
 
-### 2. **Test Locally**
+### 2. **Run Locally**
 
-```powershell
-# PowerShell on Windows
-cd c:\path\to\pdf-sign-sdk-example
-./serve.ps1
+#### **Linux/Unix** (Recommended)
+
+```bash
+# Method 1: Using the provided shell script (Python)
+cd /path/to/pdf-sign-sdk
+chmod +x serve.sh
+./serve.sh
 # Then open http://localhost:8000/example.html
 
-# Or use Python 3
+# Method 2: Using Node.js (no dependencies)
+npm start
+# or
+node server.js
+# Then open http://localhost:8000/example.html
+
+# Method 3: Using Python directly
+python3 -m http.server 8000
+```
+
+#### **Windows**
+
+```powershell
+# Using Python
+cd c:\path\to\pdf-sign-sdk
 py -3 -m http.server 8000
+# Then open http://localhost:8000/example.html
+
+# Or using Node.js
+node server.js
 ```
 
 ## API Reference
@@ -418,6 +460,122 @@ viewer.addEventListener('find-result', (ev) => {
 viewer.addEventListener('loaded', (ev) => {
   // ev.detail = {pages: number}
 });
+```
+
+## Deployment on Linux
+
+### **NPM Publishing**
+
+To publish this package to NPM:
+
+```bash
+# Login to NPM
+npm login
+
+# Publish the package
+npm publish
+```
+
+Users can then install it via:
+
+```bash
+npm install pdf-sign-sdk
+```
+
+### **Production Deployment with systemd**
+
+For production Linux servers, use systemd to run the service:
+
+1. **Install the application:**
+
+```bash
+# Clone or copy files to /var/www/pdf-sign-sdk
+sudo mkdir -p /var/www/pdf-sign-sdk
+sudo cp -r * /var/www/pdf-sign-sdk/
+sudo chown -R www-data:www-data /var/www/pdf-sign-sdk
+```
+
+2. **Install Node.js** (if not already installed):
+
+```bash
+# Ubuntu/Debian
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# CentOS/RHEL
+curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash -
+sudo yum install -y nodejs
+```
+
+3. **Setup systemd service:**
+
+```bash
+# Copy service file
+sudo cp pdf-sign-sdk.service /etc/systemd/system/
+
+# Edit the service file if needed (change user, path, port)
+sudo nano /etc/systemd/system/pdf-sign-sdk.service
+
+# Reload systemd
+sudo systemctl daemon-reload
+
+# Enable service to start on boot
+sudo systemctl enable pdf-sign-sdk
+
+# Start the service
+sudo systemctl start pdf-sign-sdk
+
+# Check status
+sudo systemctl status pdf-sign-sdk
+```
+
+4. **View logs:**
+
+```bash
+# Real-time logs
+sudo journalctl -u pdf-sign-sdk -f
+
+# Last 100 lines
+sudo journalctl -u pdf-sign-sdk -n 100
+```
+
+### **Nginx Reverse Proxy** (Optional)
+
+For production with SSL/TLS:
+
+```nginx
+server {
+    listen 80;
+    server_name yourdomain.com;
+
+    location / {
+        proxy_pass http://localhost:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+### **Docker Deployment** (Alternative)
+
+Create a `Dockerfile`:
+
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY . .
+EXPOSE 8000
+CMD ["node", "server.js"]
+```
+
+Build and run:
+
+```bash
+docker build -t pdf-sign-sdk .
+docker run -d -p 8000:8000 pdf-sign-sdk
 ```
 
 ## License
