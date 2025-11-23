@@ -46,6 +46,25 @@ A powerful, zero-dependency PDF signature annotation SDK built as a Web Componen
 - `serve.sh` – Linux/Unix development server script
 - `package.json` – NPM package configuration
 
+## Installation
+
+### **Option 1: Clone from GitHub**
+
+```bash
+git clone https://github.com/zeingaber25/pdf-sign-sdk.git
+cd pdf-sign-sdk
+```
+
+### **Option 2: Install via NPM** (if published)
+
+```bash
+npm install pdf-sign-sdk
+```
+
+### **Option 3: Download directly**
+
+Download the files and include `pdf-sign-sdk.js` in your HTML.
+
 ## Quick Start
 
 ### 1. **Include in HTML**
